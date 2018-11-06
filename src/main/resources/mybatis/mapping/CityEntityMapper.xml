@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bbsuper.nev.dao.mapping.CityEntityMapper">
+  <resultMap id="BaseResultMap" type="com.bbsuper.nev.beans.po.CityEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="plate_numbers" jdbcType="VARCHAR" property="plateNumbers" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, province, city, plate_numbers,status, update_time, create_time
+  </sql>
+  
+  <sql id="Condition_City">
+  	<if test="condition != null and condition.status != null">
+        and status = #{condition.status} 
+    </if>
+    <if test="condition != null and condition.province != null and condition.province != '' ">
+        and province = #{condition.province} 
+    </if>
+  </sql>
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_city
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryAll"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_city 
+  </select>
+  
+  <select id="queryListByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_city
+    where 1=1
+    <include refid="Condition_City" />
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  
+  <select id="queryCountByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+    select count(*)
+    from nev_city
+    where 1=1
+    <include refid="Condition_City" />
+  </select>
+  
+  
+  <insert id="insert" parameterType="com.bbsuper.nev.beans.po.CityEntity">
+    insert into nev_city
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="province != null and province!='' ">
+        province,
+      </if>
+      <if test="city != null and city != '' ">
+        city,
+      </if>
+      <if test="plateNumbers != null and plateNumbers!=''">
+        plate_numbers,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="province != null and province!='' ">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null and city != '' ">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="plateNumbers != null and plateNumbers!=''">
+        #{plateNumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateById" parameterType="com.bbsuper.nev.beans.po.CityEntity">
+    update nev_city
+    <set>
+      <if test="province != null and province!='' ">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null and city != '' ">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="plateNumbers != null and plateNumbers!=''">
+        plate_numbers = #{plateNumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

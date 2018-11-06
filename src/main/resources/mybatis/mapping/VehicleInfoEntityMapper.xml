@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bbsuper.nev.dao.mapping.VehicleInfoEntityMapper">
+  <resultMap id="BaseResultMap" type="com.bbsuper.nev.beans.po.VehicleInfoEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="vehicle_type_id" jdbcType="BIGINT" property="vehicleTypeId" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="plate_numbers" jdbcType="VARCHAR" property="plateNumbers" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="closing_cost" jdbcType="DECIMAL" property="closingCost" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="deal_date" jdbcType="TIMESTAMP" property="dealDate" />
+    <result column="return_date" jdbcType="TIMESTAMP" property="returnDate" />
+    <result column="return_reason" jdbcType="LONGVARCHAR" property="returnReason" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, vehicle_type_id, customer_id, plate_numbers, price, closing_cost, status, deal_date, 
+    return_date,return_reason, update_time, create_time
+  </sql>
+  
+  <sql id="Base_Vehicle_Info">
+    select
+	    v.id "id",
+	    v.vehicle_type_id "vehicleTypeId", 
+	    v.plate_numbers "plateNumbers", 
+	    v.price "price", 
+	    v.closing_cost "closingCost",
+	    DATE_FORMAT(v.create_time, '%Y-%m-%d') "addDate", 
+	    DATE_FORMAT(v.deal_date, '%Y-%m-%d') "soldDate", 
+	    DATE_FORMAT(v.return_date, '%Y-%m-%d') "backDate", 
+	    return_reason "returnReason",
+	    a.name "accountName",
+	    c.name "customerName",
+	    c.mobile "customerMobile"
+	 from nev_vehicle_info v 
+	 left join nev_customer c ON v.customer_id = c.id 
+	 left join nev_account a ON c.salesman_id = a.id AND a.status != 'DELETE'
+	 where v.status != 'DELETE' 
+  </sql>
+  
+  <sql id="Condition_Vehicle_Info">
+    
+    <if test="condition != null and condition.statuss != null and condition.statuss.size()>0 ">
+    	and v.status in 
+        <foreach collection ="condition.statuss" item="info" open="(" close=")" separator=",">
+         #{info}
+    	</foreach>
+    </if>
+    <if test="condition != null and condition.status != null ">
+        and v.status =  #{condition.status}
+    </if>
+    <if test="condition != null and condition.vehicleTypeId != null ">
+        and v.vehicle_type_id =  #{condition.vehicleTypeId}
+    </if>
+    <if test="condition != null and condition.plateNumbers != null and condition.plateNumbers!= '' ">
+        and v.plate_numbers like  "%${condition.plateNumbers}%" 
+    </if>
+    <if test="condition != null and condition.addStartDate != null and condition.addStartDate != '' ">
+        and v.create_time &gt;= #{condition.addStartDate} 
+    </if>
+    <if test="condition != null and condition.addEndDate != null and condition.addEndDate != '' ">
+        and v.create_time &lt;= #{condition.addEndDate} 
+    </if>
+    
+    <if test="condition != null and condition.soldStartDate != null and condition.soldStartDate != '' ">
+        and v.deal_date &gt;= #{condition.soldStartDate} 
+    </if>
+    <if test="condition != null and condition.soldEndDate != null and condition.soldEndDate != '' ">
+        and v.deal_date &lt;= #{condition.soldEndDate} 
+    </if>
+    
+    <if test="condition != null and condition.backStartDate != null and condition.backStartDate != '' ">
+        and v.return_date &gt;= #{condition.backStartDate} 
+    </if>
+    <if test="condition != null and condition.backEndDate != null and condition.backEndDate != '' ">
+        and v.return_date &lt;= #{condition.backEndDate} 
+    </if>
+  </sql>
+  
+  
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_vehicle_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  
+  
+  <select id="queryAvailableByPlateNumbers" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_vehicle_info
+    where plate_numbers = #{plateNumbers,jdbcType=VARCHAR} 
+    and customer_id is null and status = 'NORMAL' 
+  </select>
+  
+  
+  <select id="queryListByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType="com.bbsuper.nev.beans.vo.vehicle.VehicleInfo" >
+	<include refid="Base_Vehicle_Info" />
+    <include refid="Condition_Vehicle_Info" />
+    order by v.id desc  
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  
+  <select id="queryCountByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+	select count(*)
+    from nev_vehicle_info v
+    where v.status != 'DELETE'
+    <include refid="Condition_Vehicle_Info" />
+  </select>
+  
+  <update id="deleteById" parameterType="java.lang.Long">
+    update nev_vehicle_info
+    <set>
+        status = 'DELETE',
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <insert id="insert" parameterType="com.bbsuper.nev.beans.po.VehicleInfoEntity">
+    insert into nev_vehicle_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="vehicleTypeId != null">
+        vehicle_type_id,
+      </if>
+      <if test="plateNumbers != null and plateNumbers!='' ">
+        plate_numbers,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="vehicleTypeId != null">
+        #{vehicleTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="plateNumbers != null and plateNumbers!='' ">
+        #{plateNumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into nev_vehicle_info
+            (vehicle_type_id, plate_numbers, price,status)
+    VALUES
+    <foreach collection ="list" item="info" separator =",">
+         (#{info.vehicleTypeId}, #{info.plateNumbers}, #{info.price},#{info.status})
+    </foreach>
+  </insert>
+  
+  <update id="updateById" parameterType="com.bbsuper.nev.beans.po.VehicleInfoEntity">
+    update nev_vehicle_info
+    <set>
+      <if test="vehicleTypeId != null">
+        vehicle_type_id = #{vehicleTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="plateNumbers != null and plateNumbers!='' ">
+        plate_numbers = #{plateNumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="closingCost != null">
+        closing_cost = #{closingCost,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="dealDate != null">
+        deal_date = #{dealDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnDate != null">
+        return_date = #{returnDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnReason != null and returnReason != '' ">
+        return_reason = #{returnReason,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+</mapper>

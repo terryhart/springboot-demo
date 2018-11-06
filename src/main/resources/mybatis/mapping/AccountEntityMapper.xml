@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bbsuper.nev.dao.mapping.AccountEntityMapper">
+  <resultMap id="BaseResultMap" type="com.bbsuper.nev.beans.po.AccountEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, account, password, name, mobile, role_id, city_id, position, status, update_time, 
+    create_time
+  </sql>
+  <sql id="Base_User_Info">
+  	select 
+	    u.id  "id",
+	    u.account "account", 
+	    u.password "password", 
+	    u.name "name", 
+	    u.mobile "mobile",
+	    u.role_id  "roleId",
+	    r.name "roleName",
+	    r.status "roleStatus",
+	    r.privilege_code "privilegeCode", 
+	    u.city_id "cityId",
+	    u.position "position", 
+	    u.status "status"
+    from nev_account u LEFT JOIN nev_account_role r ON u.role_id = r.id and r.status != 'DELETE' 
+    where u.status != 'DELETE' 
+  </sql>
+  <sql id="Condition_User_Info">
+  	<if test="condition != null and condition.status != null">
+        and u.status = #{condition.status} 
+    </if>
+    <if test="condition != null and condition.roleId != null and condition.roleId!= '' ">
+        and u.role_id =  #{condition.roleId}
+    </if>
+    <if test="condition != null and condition.matching != null and condition.matching!= '' ">
+        and (u.account like  "%${condition.matching}%" 
+        or u.name like  "%${condition.matching}%"
+        or u.mobile like  "%${condition.matching}%") 
+    </if>
+  </sql>
+  
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_account
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryUserInfoByAccount" parameterType="java.lang.String" resultType="com.bbsuper.nev.beans.vo.user.UserInfo">
+    <include refid="Base_User_Info" />
+     and u.account = #{account,jdbcType=VARCHAR} 
+  </select>
+  
+  <select id="queryUserInfoById" parameterType="java.lang.Long" resultType="com.bbsuper.nev.beans.vo.user.UserInfo">
+    <include refid="Base_User_Info" />
+     and  u.id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryListByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType="com.bbsuper.nev.beans.vo.user.UserInfo" >
+	<include refid="Base_User_Info" />
+    <include refid="Condition_User_Info" />
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  
+  <select id="queryCountByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+	select count(*)
+    from nev_account u
+    where u.status != 'DELETE'
+    <include refid="Condition_User_Info" />
+  </select>
+
+
+  <update id="deleteById" parameterType="java.lang.Long">
+    update nev_account 
+    <set>
+        status = 'DELETE',
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <insert id="insert" parameterType="com.bbsuper.nev.beans.po.AccountEntity">
+    insert into nev_account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="account != null and account != '' ">
+        account,
+      </if>
+      <if test="password != null and password != '' ">
+        password,
+      </if>
+      <if test="name != null and name != '' ">
+        name,
+      </if>
+      <if test="mobile != null and mobile != '' ">
+        mobile,
+      </if>
+      <if test="roleId != null and roleId != ''  ">
+        role_id,
+      </if>
+      <if test="cityId != null and cityId != '' ">
+        city_id,
+      </if>
+      <if test="position != null and position != '' ">
+        position,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="account != null and account != '' ">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null and password != ''">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null and name != ''">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null and mobile != '' ">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null and roleId != '' ">
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="cityId != null and cityId != '' ">
+        #{cityId,jdbcType=BIGINT},
+      </if>
+      <if test="position != null and position != '' ">
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateById" parameterType="com.bbsuper.nev.beans.po.AccountEntity">
+    update nev_account
+    <set>
+      <if test="account != null and account!='' ">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null and password!='' ">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null and name!='' ">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null and mobile!='' ">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null and roleId!='' ">
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="cityId != null and cityId!='' ">
+        city_id = #{cityId,jdbcType=BIGINT},
+      </if>
+      <if test="position != null and position!='' ">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

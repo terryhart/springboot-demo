@@ -1,0 +1,86 @@
+package com.bbsuper.nev.config;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bbsuper.nev.beans.enums.result.BaseRetCode;
+import com.bbsuper.nev.beans.vo.common.ResultData;
+import com.bbsuper.nev.exception.MissingParameterException;
+import com.bbsuper.nev.exception.RetCodeException;
+
+
+/**
+ * 全局Controller处理
+ * @author liwei
+ * @date: 2018年9月10日 上午10:54:48
+ *
+ */
+@ControllerAdvice
+public class GlobalHandler{
+	
+	private static  Logger logger = LoggerFactory.getLogger(GlobalHandler.class);
+	
+	/**
+	 * 全局异常处理
+	 * @param req
+	 * @param e
+	 * @return
+	 */
+
+	@ExceptionHandler(Exception.class)
+    @ResponseBody
+    public ResultData<Void> defaultErrorHandler(HttpServletRequest req,HttpServletResponse res, Exception e){
+		/**
+		 * 参数缺失的异常
+		 */
+		if(e instanceof BindException || e instanceof MissingServletRequestParameterException
+				|| e instanceof MissingParameterException){
+			logger.error("defaultErrorHandler,uri:{},exception:{}",req.getRequestURI(),e.getMessage());
+			return ResultData.getInstance(BaseRetCode.PARAM_MISSING);
+		}
+		/**
+		 * 需要返回响应码的异常
+		 */
+		if(e instanceof RetCodeException){
+			return ((RetCodeException)e).getRetCode();
+		}
+		
+		logger.error("defaultErrorHandler,uri:{},exception",req.getRequestURI(),e);
+		return ResultData.getInstance(BaseRetCode.EXCEPTION);
+    }
+	
+	/**
+	 * 应用到所有@RequestMapping注解方法
+	 * 请求参数实例化为bean时的转换处理
+	 * @param binder
+	 */
+	@InitBinder
+    public void initBinder(final WebDataBinder binder) {
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), true));
+    }
+	
+	/**
+     * 把值绑定到Model中，使全局@RequestMapping可以获取到该值
+     * @param model
+     */
+	@ModelAttribute
+    public void addAttributes(Model model) {
+        //model.addAttribute("author", "liwei");
+    }
+}

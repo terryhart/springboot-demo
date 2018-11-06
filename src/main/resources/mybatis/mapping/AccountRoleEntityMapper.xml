@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bbsuper.nev.dao.mapping.AccountRoleEntityMapper">
+  <resultMap id="BaseResultMap" type="com.bbsuper.nev.beans.po.AccountRoleEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="privilege_code" jdbcType="VARCHAR" property="privilegeCode" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, privilege_code, status, update_time, create_time
+  </sql>
+  
+  <sql id="Condition_Role">
+  	<if test="condition != null and condition.status != null">
+        and status = #{condition.status} 
+    </if>
+    <if test="condition != null and condition.name != null and condition.name!= '' ">
+        and name like "%${condition.name}%" 
+    </if>
+  </sql>
+  
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_account_role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryListByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_account_role
+    where status != 'DELETE' 
+    <include refid="Condition_Role" />
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  
+  <select id="queryCountByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+    select count(*)
+    from nev_account_role
+    where status != 'DELETE'
+    <include refid="Condition_Role" />
+  </select>
+
+  <update id="deleteById" parameterType="java.lang.Long">
+    update nev_account_role 
+    <set>
+        status = 'DELETE',
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <insert id="insert" parameterType="com.bbsuper.nev.beans.po.AccountRoleEntity">
+    insert into nev_account_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null and name != '' ">
+        name,
+      </if>
+      <if test="privilegeCode != null and privilegeCode != '' ">
+        privilege_code,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null and name != '' ">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="privilegeCode != null and privilegeCode != '' ">
+        #{privilegeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateById" parameterType="com.bbsuper.nev.beans.po.AccountRoleEntity">
+    update nev_account_role
+    <set>
+      <if test="name != null and name != '' ">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="privilegeCode != null and privilegeCode != '' ">
+        privilege_code = #{privilegeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

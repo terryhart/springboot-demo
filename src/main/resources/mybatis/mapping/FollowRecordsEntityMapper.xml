@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bbsuper.nev.dao.mapping.FollowRecordsEntityMapper">
+  <resultMap id="BaseResultMap" type="com.bbsuper.nev.beans.po.FollowRecordsEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="salesman_id" jdbcType="BIGINT" property="salesmanId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, customer_id, salesman_id, status, keyword, remark, update_time, create_time
+  </sql>
+  
+  <sql id="Base_Follow_Records">
+  	select
+	    a.name "saleName", 
+	    f.status "status", 
+	    f.keyword "keyword", 
+	    f.remark "remark", 
+	    DATE_FORMAT(f.create_time, '%Y-%m-%d %H:%i:%S') "followTime" 
+	from nev_follow_records f 
+	left join nev_account a ON f.salesman_id = a.id AND a.status != 'DELETE' 
+  </sql>
+  
+  
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_follow_records
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryListByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType="com.bbsuper.nev.beans.vo.customer.FollowRecordsInfo" >
+	<include refid="Base_Follow_Records" />
+    where f.customer_id = #{condition,jdbcType=BIGINT} 
+    order by f.id desc
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  
+  <select id="queryCountByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+	select count(*)
+    from nev_follow_records
+    where customer_id = #{condition,jdbcType=BIGINT}
+  </select>
+  
+  
+  <select id="queryCountByStatus" resultType = "java.lang.Integer">
+	select count(*)
+    from nev_follow_records
+    where customer_id = #{customerId,jdbcType=BIGINT}
+    and status = #{status,jdbcType=VARCHAR} 
+  </select>
+
+  <insert id="insert" parameterType="com.bbsuper.nev.beans.po.FollowRecordsEntity">
+    insert into nev_follow_records
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="salesmanId != null">
+        salesman_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="keyword != null and keyword != '' ">
+        keyword,
+      </if>
+      <if test="remark != null and remark != '' ">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+      <if test="customerId != null">
+        #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="salesmanId != null">
+        #{salesmanId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword != null and keyword != '' ">
+        #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null and remark != '' ">
+        #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateById" parameterType="com.bbsuper.nev.beans.po.FollowRecordsEntity">
+    update nev_follow_records
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="salesmanId != null">
+        salesman_id = #{salesmanId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword != null and keyword != '' ">
+        keyword = #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null and remark != '' ">s
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

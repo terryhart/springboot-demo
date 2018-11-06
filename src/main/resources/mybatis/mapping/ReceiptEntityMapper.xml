@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bbsuper.nev.dao.mapping.ReceiptEntityMapper">
+  <resultMap id="BaseResultMap" type="com.bbsuper.nev.beans.po.ReceiptEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="vehicle_id" jdbcType="BIGINT" property="vehicleId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_id, amount, type,vehicle_id, update_time, create_time
+  </sql>
+  
+  
+  <sql id="Base_Receipt_Info">
+    select
+	    r.id "id", 
+	    c.name "name",
+	    c.mobile "mobile",
+	    c.status "status",
+	    c.vehicle_type_id "intentionVehicleTypeId",
+	    v.plate_numbers "plateNumbers",
+	    v.vehicle_type_id  "vehicleTypeId", 
+	    r.amount "amount", 
+	    r.type "type", 
+	    DATE_FORMAT(r.create_time, '%Y-%m-%d') "date"
+	from nev_receipt r
+	left join nev_customer c ON r.customer_id = c.id 
+	left join nev_vehicle_info v ON r.vehicle_id = v.id and v.status != 'DELETE' 
+  </sql>
+  
+  <sql id="Condition_Receipt_Info">
+    
+    <if test="condition != null and condition.status != null ">
+    	and c.status =  #{condition.status}
+    </if>
+    <if test="condition != null and condition.matching != null and condition.matching!= '' ">
+        and (v.plate_numbers like  "%${condition.matching}%" 
+        	or c.mobile like  "%${condition.matching}%"
+        	or c.name like "%${condition.matching}%")
+    </if>
+    <if test="condition != null and condition.startDate != null and condition.startDate != '' ">
+        and r.create_time &gt;= #{condition.startDate} 
+    </if>
+    <if test="condition != null and condition.endDate != null and condition.endDate != '' ">
+        and r.create_time &lt;= #{condition.endDate} 
+    </if>
+  </sql>
+  
+  
+  <select id="queryListByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType="com.bbsuper.nev.beans.vo.finance.ReceiptInfo" >
+	<include refid="Base_Receipt_Info" />
+	where 1=1 
+    <include refid="Condition_Receipt_Info" />
+    order by r.id desc 
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  
+  <select id="queryCountByCondition" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+	select count(*)
+    from nev_receipt r left join nev_customer c ON r.customer_id = c.id 
+	left join nev_vehicle_info v ON r.vehicle_id = v.id and v.status != 'DELETE' 
+    where 1=1 
+    <include refid="Condition_Receipt_Info" />
+  </select>
+  
+  
+  
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_receipt
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+
+  <insert id="insert" parameterType="com.bbsuper.nev.beans.po.ReceiptEntity">
+    insert into nev_receipt
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="vehicleId != null">
+        vehicle_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="customerId != null">
+        #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleId != null">
+        #{vehicleId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateById" parameterType="com.bbsuper.nev.beans.po.ReceiptEntity">
+    update nev_receipt
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleId != null">
+        vehicle_id = #{vehicleId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

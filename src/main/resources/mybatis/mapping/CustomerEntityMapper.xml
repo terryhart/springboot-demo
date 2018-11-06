@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bbsuper.nev.dao.mapping.CustomerEntityMapper">
+  <resultMap id="BaseResultMap" type="com.bbsuper.nev.beans.po.CustomerEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="message" jdbcType="VARCHAR" property="message" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="wechat" jdbcType="VARCHAR" property="wechat" />
+    <result column="vehicle_type_id" jdbcType="BIGINT" property="vehicleTypeId" />
+    <result column="closing_cost" jdbcType="DECIMAL" property="closingCost" />
+    <result column="salesman_id" jdbcType="BIGINT" property="salesmanId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+    <result column="discard_reason" jdbcType="VARCHAR" property="discardReason" />
+    <result column="discard_time" jdbcType="VARCHAR" property="discardTime" />
+    <result column="discard_status" jdbcType="VARCHAR" property="discardStatus" />
+    <result column="buy_way" jdbcType="VARCHAR" property="buyWay" />
+    <result column="insure_date" jdbcType="VARCHAR" property="insureDate" />
+    <result column="contract_link" jdbcType="VARCHAR" property="contractLink" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, mobile, source, city_id, address, message, status, wechat, vehicle_type_id, closing_cost,
+    salesman_id, remark,keyword, discard_reason, discard_time, discard_status, buy_way, insure_date, 
+    contract_link, update_time, create_time
+  </sql>
+  
+  
+  <sql id="Base_Customer_Info">
+    select
+	    c.id "id",
+	    c.name "name",
+	    c.mobile "mobile", 
+	    c.source "source",
+	    c.city_id "cityId", 
+	    c.address "address", 
+	    c.message "message", 
+	    DATE_FORMAT(c.create_time, '%Y-%m-%d %H:%i:%S') "applyTime", 
+	    c.status "status", 
+	    c.wechat "wechat",
+	    c.vehicle_type_id "intentionVehicleTypeId", 
+	    c.salesman_id "salesmanId", 
+	    ac.name "salesmanName", 
+	    DATE_FORMAT(c.update_time, '%Y-%m-%d %H:%i:%S') "followTime", 
+	    c.remark "remark",
+	    c.keyword "keyword",
+	    ve.id "vehicleId", 
+	    ve.plate_numbers "plateNumbers", 
+	    c.closing_cost "closingCost",
+	    ve.vehicle_type_id "vehicleTypeId",
+	    c.discard_reason "discardReason",
+	    c.discard_time "discardTime", 
+	    c.buy_way "buyWay",
+	    c.insure_date "insureDate",
+	    c.contract_link "contractLink"
+
+	 from nev_customer c 
+	 left join nev_account ac ON c.salesman_id = ac.id and ac.status != 'DELETE'
+	 left join nev_vehicle_info ve ON ve.customer_id = c.id AND ve.status IN ('NORMAL','SOLD') 
+  </sql>
+  
+  <sql id="Condition_Customer_Intention">
+  
+  	and c.status = 'INTERESTING' 
+  	<!-- 意向客户-->
+    <if test="condition != null and condition.source != null">
+        and c.source = #{condition.source} 
+    </if>
+    <if test="condition != null and condition.applyStartDate != null and condition.applyStartDate != '' ">
+        and c.create_time &gt;= #{condition.applyStartDate} 
+    </if>
+    <if test="condition != null and condition.applyEndDate != null and condition.applyEndDate != '' ">
+        and c.create_time &lt;= #{condition.applyEndDate} 
+    </if>
+  
+  </sql>
+  
+  <sql id="Condition_Customer_Follow">
+  	and c.status in ('FOLLOW_1','FOLLOW_2','FOLLOW_3','FOLLOW_4','FOLLOW_5','FOLLOW_6')  
+    <!-- 跟进客户 -->
+   	<if test="condition != null and condition.status != null">
+        and c.status = #{condition.status} 
+    </if>
+    <if test="condition != null and condition.followStartDate != null and condition.followStartDate != '' ">
+        and c.update_time &gt;= #{condition.followStartDate} 
+    </if>
+    <if test="condition != null and condition.followEndDate != null and condition.followEndDate != '' ">
+        and c.update_time &lt;= #{condition.followEndDate} 
+    </if>
+  
+  </sql>
+  
+  <sql id="Condition_Customer_Sold">
+  	and c.status = 'SOLD' 
+    <!-- 已售客户 -->
+    <if test="condition != null and condition.buyWay != null">
+        and c.buy_way = #{condition.buyWay} 
+    </if>
+    <if test="condition != null and condition.vehicleTypeId != null ">
+        and ve.vehicle_type_id = #{condition.vehicleTypeId} 
+    </if>
+    <if test="condition != null and condition.insureStartDate != null and condition.insureStartDate != '' ">
+        and c.insure_date &gt;= #{condition.insureStartDate} 
+    </if>
+    <if test="condition != null and condition.insureEndDate != null and condition.insureEndDate != '' ">
+        and c.insure_date &lt;= #{condition.insureEndDate} 
+    </if> 
+  </sql>
+  
+  <sql id="Condition_Customer_Discard">
+  	and c.status = 'DISCARD'
+  	<!-- 放弃客户-->
+    <if test="condition != null and condition.intentionVehicleTypeId != null">
+        and c.vehicle_type_id = #{condition.intentionVehicleTypeId} 
+    </if>
+    <if test="condition != null and condition.insureStartDate != null and condition.insureStartDate != '' ">
+        and c.insure_date &gt;= #{condition.insureStartDate} 
+    </if>
+    <if test="condition != null and condition.insureEndDate != null and condition.insureEndDate != '' ">
+        and c.insure_date &lt;= #{condition.insureEndDate} 
+    </if>
+  </sql>
+  
+  <sql id="Condition_Customer_Info">
+    <if test="condition != null and condition.cityId != null">
+        and (c.cityId = #{condition.cityId} or  c.cityId = '0')
+    </if>
+    
+    <if test="condition != null and condition.saleId != null">
+        and (c.salesman_id = #{condition.saleId} or  c.salesman_id is null)
+    </if>
+    <if test="condition != null and condition.matching != null and condition.matching != '' ">
+        and (c.name like "%${condition.matching}%"
+        	or c.mobile like "%${condition.matching}%")
+    </if>
+  </sql>
+  
+  
+  
+  <select id="queryListByInteresting" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType="com.bbsuper.nev.beans.vo.customer.CustomerInfo" >
+	<include refid="Base_Customer_Info" />
+	where 1=1 
+    <include refid="Condition_Customer_Info" />
+    <include refid="Condition_Customer_Intention" />
+    order by c.id desc 
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  <select id="queryCountByInteresting" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+	select count(*)
+    from nev_customer c 
+    where 1=1
+    <include refid="Condition_Customer_Info" />
+    <include refid="Condition_Customer_Intention" />
+  </select>
+  
+  
+  <select id="queryListByFollow" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType="com.bbsuper.nev.beans.vo.customer.CustomerInfo" >
+	<include refid="Base_Customer_Info" />
+	where 1=1 
+    <include refid="Condition_Customer_Info" />
+    <include refid="Condition_Customer_Follow" />
+    order by c.id desc 
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  <select id="queryCountByFollow" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+	select count(*)
+    from nev_customer c 
+    where 1=1
+    <include refid="Condition_Customer_Info" />
+    <include refid="Condition_Customer_Follow" />
+  </select>
+  
+  
+  <select id="queryListBySold" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType="com.bbsuper.nev.beans.vo.customer.CustomerInfo" >
+	<include refid="Base_Customer_Info" />
+	where 1=1 
+    <include refid="Condition_Customer_Info" />
+    <include refid="Condition_Customer_Sold" />
+    order by c.id desc 
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  <select id="queryCountBySold" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+	select count(*)
+    from nev_customer c left join nev_vehicle_info ve ON ve.customer_id = c.id AND ve.status IN ('NORMAL','SOLD') 
+    where 1=1
+    <include refid="Condition_Customer_Info" />
+    <include refid="Condition_Customer_Sold" />
+  </select>
+  
+  
+  
+  <select id="queryListByDiscard" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType="com.bbsuper.nev.beans.vo.customer.CustomerInfo" >
+	<include refid="Base_Customer_Info" />
+	where 1=1 
+    <include refid="Condition_Customer_Info" />
+    <include refid="Condition_Customer_Discard" />
+    order by c.id desc 
+    <if test="pageInfo!= null">
+		limit #{pageInfo.currentPageStartIndex},#{pageInfo.pageSize} 
+	</if>
+  </select>
+  <select id="queryCountByDiscard" parameterType="com.bbsuper.nev.beans.dto.paging.PaginationCondition" resultType = "java.lang.Integer">
+	select count(*)
+    from nev_customer c 
+    where 1=1
+    <include refid="Condition_Customer_Info" />
+    <include refid="Condition_Customer_Discard" />
+  </select>
+  
+  <select id="queryCustomerInfoById" parameterType="java.lang.Long" resultType="com.bbsuper.nev.beans.vo.customer.CustomerInfo" >
+	<include refid="Base_Customer_Info" />
+	where c.id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from nev_customer
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <insert id="insert" parameterType="com.bbsuper.nev.beans.po.CustomerEntity">
+    insert into nev_customer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null and name != '' ">
+        name,
+      </if>
+      <if test="mobile != null and mobile != '' ">
+        mobile,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="address != null and address != '' ">
+        address,
+      </if>
+      <if test="message != null and message != '' ">
+        message,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="wechat != null and wechat != '' ">
+        wechat,
+      </if>
+      <if test="vehicleTypeId != null ">
+        vehicle_type_id,
+      </if>
+      <if test="closingCost != null">
+      	closing_cost,
+      </if>
+      <if test="salesmanId != null">
+        salesman_id,
+      </if>
+      <if test="remark != null and remark != '' ">
+        remark,
+      </if>
+      <if test="keyword != null and keyword != '' ">
+        keyword,
+      </if>
+      <if test="discardReason != null and discardReason != '' ">
+        discard_reason,
+      </if>
+      <if test="discardTime != null and discardTime != ''">
+        discard_time,
+      </if>
+      <if test="discardStatus != null">
+        discard_status,
+      </if>
+      <if test="buyWay != null">
+        buy_way,
+      </if>
+      <if test="insureDate != null and insureDate != '' ">
+        insure_date,
+      </if>
+      <if test="contractLink != null and contractLink != '' ">
+        contract_link,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null and name != '' ">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null and mobile != '' ">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null">
+        #{cityId,jdbcType=BIGINT},
+      </if>
+      <if test="address != null and address != '' ">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null and message != '' ">
+        #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="wechat != null and wechat != '' ">
+        #{wechat,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleTypeId != null ">
+        #{vehicleTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="closingCost != null">
+      	#{closing_cost,jdbcType=DECIMAL},
+      </if>
+      <if test="salesmanId != null">
+        #{salesmanId,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null and remark != '' ">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword != null and keyword != '' ">
+        #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="discardReason != null and discardReason != '' ">
+        #{discardReason,jdbcType=VARCHAR},
+      </if>
+      <if test="discardTime != null and discardTime != ''">
+        #{discardTime,jdbcType=VARCHAR},
+      </if>
+      <if test="discardStatus != null">
+        #{discardStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="buyWay != null">
+        #{buyWay,jdbcType=VARCHAR},
+      </if>
+      <if test="insureDate != null and insureDate != '' ">
+        #{insureDate,jdbcType=VARCHAR},
+      </if>
+      <if test="contractLink != null and contractLink != '' ">
+        #{contractLink,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateById" parameterType="com.bbsuper.nev.beans.po.CustomerEntity">
+    update nev_customer
+    <set>
+      <if test="name != null and name != '' ">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null and mobile != '' ">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null">
+        city_id = #{cityId,jdbcType=BIGINT},
+      </if>
+      <if test="address != null and address != '' ">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null and message != '' ">
+        message = #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="wechat != null and wechat != '' ">
+        wechat = #{wechat,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleTypeId != null ">
+        vehicle_type_id = #{vehicleTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="closingCost != null">
+        closing_cost = #{closingCost,jdbcType=DECIMAL},
+      </if>
+      <if test="salesmanId != null">
+        salesman_id = #{salesmanId,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null and remark != '' ">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword != null and keyword != '' ">
+        keyword = #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="discardReason != null and discardReason != '' ">
+        discard_reason = #{discardReason,jdbcType=VARCHAR},
+      </if>
+      <if test="discardTime != null and discardTime != ''">
+        discard_time = #{discardTime,jdbcType=VARCHAR},
+      </if>
+      <if test="discardStatus != null">
+        discard_status = #{discardStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="buyWay != null">
+        buy_way = #{buyWay,jdbcType=VARCHAR},
+      </if>
+      <if test="insureDate != null and insureDate != '' ">
+        insure_date = #{insureDate,jdbcType=VARCHAR},
+      </if>
+      <if test="contractLink != null and contractLink != '' ">
+        contract_link = #{contractLink,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
