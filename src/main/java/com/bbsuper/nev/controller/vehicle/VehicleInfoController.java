@@ -21,7 +21,7 @@ import com.bbsuper.nev.beans.dto.vehicle.VehicleDto;
 import com.bbsuper.nev.beans.po.VehicleInfoEntity;
 import com.bbsuper.nev.beans.vo.common.ResultData;
 import com.bbsuper.nev.beans.vo.vehicle.VehicleInfo;
-import com.bbsuper.nev.beans.vo.vehicle_type.VehicleTypeInfo;
+import com.bbsuper.nev.beans.vo.vehicle.type.VehicleTypeInfo;
 import com.bbsuper.nev.service.VehicleInfoService;
 import com.bbsuper.nev.service.VehicleTypeService;
 import com.google.common.collect.Lists;

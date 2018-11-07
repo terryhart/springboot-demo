@@ -8,7 +8,12 @@ import com.bbsuper.nev.beans.dto.finance.RecordsCondition;
 import com.bbsuper.nev.beans.dto.paging.PaginationCondition;
 import com.bbsuper.nev.beans.po.ReceiptEntity;
 import com.bbsuper.nev.beans.vo.finance.ReceiptInfo;
-
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:42:58
+ *
+ */
 @Mapper
 public interface ReceiptEntityMapper {
 

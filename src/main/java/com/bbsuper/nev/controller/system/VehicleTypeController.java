@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bbsuper.nev.annotation.Slf4j;
 import com.bbsuper.nev.beans.dto.paging.PaginationCondition;
 import com.bbsuper.nev.beans.dto.paging.PaginationResult;
-import com.bbsuper.nev.beans.dto.vehicle_type.EditVehicleTypeDto;
-import com.bbsuper.nev.beans.dto.vehicle_type.VehicleTypeCondition;
-import com.bbsuper.nev.beans.dto.vehicle_type.VehicleTypeDto;
+import com.bbsuper.nev.beans.dto.vehicle.type.EditVehicleTypeDto;
+import com.bbsuper.nev.beans.dto.vehicle.type.VehicleTypeCondition;
+import com.bbsuper.nev.beans.dto.vehicle.type.VehicleTypeDto;
 import com.bbsuper.nev.beans.po.VehicleTypeEntity;
 import com.bbsuper.nev.beans.vo.common.ResultData;
-import com.bbsuper.nev.beans.vo.vehicle_type.VehicleTypeInfo;
+import com.bbsuper.nev.beans.vo.vehicle.type.VehicleTypeInfo;
 import com.bbsuper.nev.service.VehicleTypeService;
 
 import io.swagger.annotations.Api;

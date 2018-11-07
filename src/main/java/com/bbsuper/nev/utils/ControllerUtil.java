@@ -45,4 +45,8 @@ public class ControllerUtil {
 		USERS.set(user);
 	}
 
+	public static void removeUser() {
+		USERS.remove();
+	}
+
 }

@@ -9,7 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:43:43
+ *
+ */
 @Component
 public class FtpFactory implements PooledObjectFactory<FTPClient>{
 	

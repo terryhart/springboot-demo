@@ -5,8 +5,14 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.bbsuper.nev.beans.dto.paging.PaginationCondition;
-import com.bbsuper.nev.beans.dto.vehicle_type.VehicleTypeCondition;
+import com.bbsuper.nev.beans.dto.vehicle.type.VehicleTypeCondition;
 import com.bbsuper.nev.beans.po.VehicleTypeEntity;
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:43:33
+ *
+ */
 @Mapper
 public interface VehicleTypeEntityMapper {
 

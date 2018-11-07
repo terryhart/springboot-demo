@@ -1,4 +1,4 @@
-package com.bbsuper.nev.beans.dto.vehicle_type;
+package com.bbsuper.nev.beans.dto.vehicle.type;
 
 import javax.validation.constraints.NotEmpty;
 

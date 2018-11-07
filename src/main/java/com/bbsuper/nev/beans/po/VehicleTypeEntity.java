@@ -4,7 +4,7 @@ package com.bbsuper.nev.beans.po;
 import java.text.SimpleDateFormat;
 
 import com.bbsuper.nev.beans.po.common.Entity;
-import com.bbsuper.nev.beans.vo.vehicle_type.VehicleTypeInfo;
+import com.bbsuper.nev.beans.vo.vehicle.type.VehicleTypeInfo;
 /**
  * 车辆类目
  * @author liwei
@@ -34,7 +34,14 @@ public class VehicleTypeEntity extends Entity{
     private Status status;
     
     public enum Status{
-    	NORMAL,DISABLED;
+    	/**
+    	 * 正常
+    	 */
+    	NORMAL,
+    	/**
+    	 * 禁用
+    	 */
+    	DISABLED;
     }
 
     public String getDistributor() {

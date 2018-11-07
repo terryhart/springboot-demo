@@ -143,7 +143,7 @@ public class AccountDto {
 		entity.setPosition(getPosition());
 		entity.setRoleId(getRoleId());
 		entity.setCityId(getCityId());
-		entity.setPassword(EncryptionUtils.MD5("123456"));
+		entity.setPassword(EncryptionUtils.md5("123456"));
 		entity.setStatus(AccountEntity.Status.NORMAL);
 		return entity;
 	}

@@ -8,6 +8,12 @@ import com.bbsuper.nev.beans.dto.paging.PaginationCondition;
 import com.bbsuper.nev.beans.dto.vehicle.VehicleCondition;
 import com.bbsuper.nev.beans.po.VehicleInfoEntity;
 import com.bbsuper.nev.beans.vo.vehicle.VehicleInfo;
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:43:25
+ *
+ */
 @Mapper
 public interface VehicleInfoEntityMapper {
     int deleteById(Long id);

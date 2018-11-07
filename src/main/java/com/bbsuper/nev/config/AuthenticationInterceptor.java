@@ -3,7 +3,6 @@ package com.bbsuper.nev.config;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +40,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
 	
 	private static Logger logger = LoggerFactory.getLogger(AuthenticationInterceptor.class);
 	
+	private static final String API_DOC_URI = "/swagger-resources";
 	@Resource
 	private UserCacheService userCacheService;
 	
@@ -63,7 +63,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
         }
         Method method = ((HandlerMethod) handler).getMethod();
         //2.判断接口是否需要登录
-        if (request.getRequestURI().startsWith("/swagger-resources")) {
+        if (request.getRequestURI().startsWith(API_DOC_URI)) {
         	return true;
         }
         IgnoreAuthentication methodAnnotation = method.getAnnotation(IgnoreAuthentication.class);
@@ -78,10 +78,18 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
         }
         return true;
 	}
-	
+
+
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+			throws Exception {
+		//清理资源
+		ControllerUtil.removeUser();
+	}
+
+
+
 	private void beforeUserInfo(String token, Token data) {
-		//刷新token有效期，保持半小时
-    	redisDao.expire(token, 30, TimeUnit.MINUTES);
     	//放入ThreadLocal，当前线程可获取
     	UserInfo userInfo = userCacheService.queryUserInfoById(data.getId());
     	if(userInfo!=null){

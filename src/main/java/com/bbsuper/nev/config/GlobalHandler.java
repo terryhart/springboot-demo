@@ -46,12 +46,12 @@ public class GlobalHandler{
 	@ExceptionHandler(Exception.class)
     @ResponseBody
     public ResultData<Void> defaultErrorHandler(HttpServletRequest req,HttpServletResponse res, Exception e){
+		logger.error("defaultErrorHandler,uri:{},exception",req.getRequestURI(),e);
 		/**
 		 * 参数缺失的异常
 		 */
 		if(e instanceof BindException || e instanceof MissingServletRequestParameterException
 				|| e instanceof MissingParameterException){
-			logger.error("defaultErrorHandler,uri:{},exception:{}",req.getRequestURI(),e.getMessage());
 			return ResultData.getInstance(BaseRetCode.PARAM_MISSING);
 		}
 		/**
@@ -60,8 +60,6 @@ public class GlobalHandler{
 		if(e instanceof RetCodeException){
 			return ((RetCodeException)e).getRetCode();
 		}
-		
-		logger.error("defaultErrorHandler,uri:{},exception",req.getRequestURI(),e);
 		return ResultData.getInstance(BaseRetCode.EXCEPTION);
     }
 	

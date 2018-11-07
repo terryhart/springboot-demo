@@ -37,7 +37,18 @@ public class ReceiptEntity extends Entity{
     private Long vehicleId;
     
     public enum Type{
-    	HANDSEL,DOWN_PAYMENT,TOTAL;
+    	/**
+    	 * 定金
+    	 */
+    	HANDSEL,
+    	/**
+    	 * 首付款
+    	 */
+    	DOWN_PAYMENT,
+    	/**
+    	 * 全款
+    	 */
+    	TOTAL;
     }
 
     

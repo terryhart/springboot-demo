@@ -25,7 +25,7 @@ import com.bbsuper.nev.beans.dto.paging.PaginationResult;
 import com.bbsuper.nev.beans.dto.vehicle.EditVehicleDto;
 import com.bbsuper.nev.beans.dto.vehicle.VehicleCondition;
 import com.bbsuper.nev.beans.dto.vehicle.VehicleDto;
-import com.bbsuper.nev.beans.dto.vehicle_type.VehicleTypeCondition;
+import com.bbsuper.nev.beans.dto.vehicle.type.VehicleTypeCondition;
 import com.bbsuper.nev.beans.enums.result.BaseRetCode;
 import com.bbsuper.nev.beans.enums.result.CustomerCodeEnum;
 import com.bbsuper.nev.beans.enums.result.VehicleCodeEnum;
@@ -60,7 +60,7 @@ public class VehicleInfoServiceImpl implements VehicleInfoService{
 	@Resource
 	private ParamCheckService paramCheckService;
 	
-	
+	@Override
 	public ResultData<PaginationResult<VehicleInfo>> queryList(PaginationCondition<VehicleCondition> condition,List<Status> status) {
 		if(condition.getCondition()==null){
 			condition.setCondition(new VehicleCondition());

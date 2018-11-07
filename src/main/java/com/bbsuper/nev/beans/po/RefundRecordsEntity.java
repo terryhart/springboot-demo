@@ -42,7 +42,14 @@ public class RefundRecordsEntity extends Entity{
     private Status status;
     
     public enum Status{
-    	STAY_REFUND,REFUND
+    	/**
+    	 * 退款待审核
+    	 */
+    	STAY_REFUND,
+    	/**
+    	 * 退款
+    	 */
+    	REFUND
     }
 
     

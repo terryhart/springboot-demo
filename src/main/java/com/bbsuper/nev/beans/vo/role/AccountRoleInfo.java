@@ -6,7 +6,12 @@ import com.bbsuper.nev.beans.po.AccountRoleEntity.Status;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:41:54
+ *
+ */
 @ApiModel("角色详情")
 public class AccountRoleInfo {
 	

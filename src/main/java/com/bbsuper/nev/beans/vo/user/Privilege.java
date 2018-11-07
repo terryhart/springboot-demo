@@ -30,9 +30,6 @@ public class Privilege implements Serializable{
 	@ApiModelProperty("允许访问的uri")
 	private String uri;
 	
-	public enum Type{
-		DIRECTORY,ACTUAL;
-	}
 
 	public int getCode() {
 		return code;

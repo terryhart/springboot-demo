@@ -37,7 +37,10 @@ public abstract class AbstractApiDoc extends Docket{
                 .useDefaultResponseMessages(false)
                 .globalOperationParameters(parameters());
     }
-
+	/**
+	 * 分组名
+	 * @return
+	 */
 	protected abstract String setGroupName();
 
 	/**

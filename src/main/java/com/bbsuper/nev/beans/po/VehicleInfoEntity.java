@@ -63,7 +63,26 @@ public class VehicleInfoEntity extends Entity{
     private String returnReason;
     
     public enum Status{
-    	NORMAL,SOLD,STAY_BACK,BACK,DELETE;
+    	/**
+    	 * 正常
+    	 */
+    	NORMAL,
+    	/**
+    	 * 已售
+    	 */
+    	SOLD,
+    	/**
+    	 * 待退回
+    	 */
+    	STAY_BACK,
+    	/**
+    	 * 退回
+    	 */
+    	BACK,
+    	/**
+    	 * 删除
+    	 */
+    	DELETE;
     }
 
 

@@ -31,7 +31,12 @@ import com.bbsuper.nev.service.handler.ParamCheckService;
 import com.bbsuper.nev.utils.ControllerUtil;
 import com.bbsuper.nev.utils.EncryptionUtils;
 import com.bbsuper.nev.utils.ImageCodeUtil;
-
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:44:14
+ *
+ */
 @Service
 public class UserServiceImpl implements UserService{
 	
@@ -86,7 +91,7 @@ public class UserServiceImpl implements UserService{
 		if(user==null){
 			return ResultData.getInstance(LoginCodeEnum.NOT_EXIST);
 		}
-		String pwd = EncryptionUtils.MD5(loginRequest.getPassword());
+		String pwd = EncryptionUtils.md5(loginRequest.getPassword());
 		if(!pwd.equals(user.getPassword())){
 			tryLockAccount(loginRequest.getAccount());
 			return ResultData.getInstance(LoginCodeEnum.PWD_ERR);
@@ -110,7 +115,7 @@ public class UserServiceImpl implements UserService{
 		token.setAccount(user.getAccount());
 		token.setPassword(user.getPassword());
 		token.setId(user.getId());
-		redisDao.set(tokens, JSON.toJSONString(token),30,TimeUnit.MINUTES);
+		redisDao.set(tokens, JSON.toJSONString(token));
 		return tokens;
 	}
 
@@ -143,12 +148,12 @@ public class UserServiceImpl implements UserService{
 		if(pwd.getNewPwd().equals(pwd.getOldPwd())){
 			return ResultData.getInstance(SystemCodeEnum.PWD_SAME);
 		}
-		if(!currentUser.getPassword().equals(EncryptionUtils.MD5(pwd.getOldPwd()))){
+		if(!currentUser.getPassword().equals(EncryptionUtils.md5(pwd.getOldPwd()))){
 			return ResultData.getInstance(SystemCodeEnum.OLD_PWD_ERR);
 		}
 		AccountEntity accountEntity = new AccountEntity();
 		accountEntity.setId(currentUser.getId());
-		accountEntity.setPassword(EncryptionUtils.MD5(pwd.getNewPwd()));
+		accountEntity.setPassword(EncryptionUtils.md5(pwd.getNewPwd()));
 		int updateById = accountEntityMapper.updateById(accountEntity);
 		return updateById==1?ResultData.getInstance():ResultData.getInstance(BaseRetCode.FAIL);
 	}

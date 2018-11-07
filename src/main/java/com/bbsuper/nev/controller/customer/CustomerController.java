@@ -29,7 +29,7 @@ import com.bbsuper.nev.beans.vo.city.CityInfo;
 import com.bbsuper.nev.beans.vo.common.ResultData;
 import com.bbsuper.nev.beans.vo.customer.CustomerInfo;
 import com.bbsuper.nev.beans.vo.customer.FollowRecordsInfo;
-import com.bbsuper.nev.beans.vo.vehicle_type.VehicleTypeInfo;
+import com.bbsuper.nev.beans.vo.vehicle.type.VehicleTypeInfo;
 import com.bbsuper.nev.service.CityService;
 import com.bbsuper.nev.service.CustomerService;
 import com.bbsuper.nev.service.VehicleInfoService;

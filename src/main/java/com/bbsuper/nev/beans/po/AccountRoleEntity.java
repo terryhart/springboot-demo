@@ -34,7 +34,18 @@ public class AccountRoleEntity extends Entity{
     private Status status;
     
     public enum Status{
-    	NORMAL,DELETE,DISABLED;
+    	/**
+    	 * 正常
+    	 */
+    	NORMAL,
+    	/**
+    	 * 删除
+    	 */
+    	DELETE,
+    	/**
+    	 * 禁用
+    	 */
+    	DISABLED;
     }
 
 

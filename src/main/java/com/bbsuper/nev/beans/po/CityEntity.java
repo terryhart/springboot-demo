@@ -39,7 +39,14 @@ public class CityEntity extends Entity{
     private Status status;
     
     public enum Status{
-    	NORMAL,DISABLED;
+    	/***
+    	 * 正常
+    	 */
+    	NORMAL,
+    	/**
+    	 * 禁用
+    	 */
+    	DISABLED;
     }
 
     public String getProvince() {

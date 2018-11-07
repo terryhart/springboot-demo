@@ -31,14 +31,14 @@ import io.swagger.annotations.ApiOperation;
 public class ReceiptController {
 	
 	@Resource
-	private ReceiptService ReceiptService;
+	private ReceiptService receiptService;
 	
 	@PostMapping("/queryList")
 	@ApiOperation(value = "查询列表", notes = "按条件查询类表")
 	@Slf4j
 	public ResultData<PaginationResult<ReceiptInfo>> queryList(@RequestBody @Validated PaginationCondition<RecordsCondition> condition){
 
-		return ReceiptService.queryList(condition);
+		return receiptService.queryList(condition);
 	}
 
 }

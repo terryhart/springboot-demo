@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 
@@ -40,6 +41,9 @@ public class FileServiceImpl implements FileService{
 	
 	@Autowired
 	private FtpConfig ftpConfig;
+	
+	@Resource
+	private Executor asyncThreadPool;
 
 	@Override
 	public ResultData<List<String>> upload(MultipartFile[] files) throws Exception {
@@ -53,7 +57,7 @@ public class FileServiceImpl implements FileService{
 	}
 	
 	private void uploadFile(MultipartFile file,CountDownLatch downLatch,List<String> result){
-		new Thread(()->{
+		asyncThreadPool.execute(()->{
 			FTPClient ftp = ftpPool.getFtp();
 			try{
 				//生成文件路径
@@ -65,13 +69,13 @@ public class FileServiceImpl implements FileService{
 				//返回文件url
 				result.add(ftpConfig.getAccessServer() + "/" +path + "/" + fileName);
 				
-				downLatch.countDown();
 			}catch(Exception e){
 				logger.error("uploadFile,error",e);
 			}finally{
+				downLatch.countDown();
 				ftpPool.returnFtp(ftp);
 			}
-		}).start();
+		});
 	}
 	
 	private String generateFileName(MultipartFile file) {

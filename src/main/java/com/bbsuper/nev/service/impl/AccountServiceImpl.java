@@ -104,7 +104,7 @@ public class AccountServiceImpl implements AccountService{
 	public ResultData<Void> resetPassword(long id) {
 		AccountEntity accountEntity = new AccountEntity();
 		accountEntity.setId(id);
-		accountEntity.setPassword(EncryptionUtils.MD5("123456"));
+		accountEntity.setPassword(EncryptionUtils.md5("123456"));
 		int updateById = accountEntityMapper.updateById(accountEntity);
 		return updateById==1?ResultData.getInstance():ResultData.getInstance(BaseRetCode.FAIL);
 	}

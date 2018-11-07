@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.bbsuper.nev.beans.dto.paging.PaginationCondition;
 import com.bbsuper.nev.beans.dto.paging.PaginationResult;
-import com.bbsuper.nev.beans.dto.vehicle_type.EditVehicleTypeDto;
-import com.bbsuper.nev.beans.dto.vehicle_type.VehicleTypeCondition;
-import com.bbsuper.nev.beans.dto.vehicle_type.VehicleTypeDto;
+import com.bbsuper.nev.beans.dto.vehicle.type.EditVehicleTypeDto;
+import com.bbsuper.nev.beans.dto.vehicle.type.VehicleTypeCondition;
+import com.bbsuper.nev.beans.dto.vehicle.type.VehicleTypeDto;
 import com.bbsuper.nev.beans.po.VehicleTypeEntity;
 import com.bbsuper.nev.beans.po.VehicleTypeEntity.Status;
 import com.bbsuper.nev.beans.vo.common.ResultData;
@@ -14,7 +14,7 @@ import com.bbsuper.nev.beans.vo.customer.CustomerInfo;
 import com.bbsuper.nev.beans.vo.finance.ReceiptInfo;
 import com.bbsuper.nev.beans.vo.finance.RefundInfo;
 import com.bbsuper.nev.beans.vo.vehicle.VehicleInfo;
-import com.bbsuper.nev.beans.vo.vehicle_type.VehicleTypeInfo;
+import com.bbsuper.nev.beans.vo.vehicle.type.VehicleTypeInfo;
 
 /**
  * 

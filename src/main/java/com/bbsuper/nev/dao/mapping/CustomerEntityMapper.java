@@ -12,7 +12,12 @@ import com.bbsuper.nev.beans.dto.customer.SoldCustomerCondition;
 import com.bbsuper.nev.beans.dto.paging.PaginationCondition;
 import com.bbsuper.nev.beans.po.CustomerEntity;
 import com.bbsuper.nev.beans.vo.customer.CustomerInfo;
-
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:42:35
+ *
+ */
 @Mapper
 public interface CustomerEntityMapper {
 

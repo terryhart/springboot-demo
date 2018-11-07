@@ -20,6 +20,12 @@ import com.bbsuper.nev.beans.vo.role.AccountRoleInfo;
 import com.bbsuper.nev.dao.mapping.AccountRoleEntityMapper;
 import com.bbsuper.nev.service.RoleService;
 import com.bbsuper.nev.service.handler.ParamCheckService;
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:44:05
+ *
+ */
 @Service
 public class RoleServiceImpl implements RoleService{
 	

@@ -9,6 +9,13 @@ import com.bbsuper.nev.beans.dto.paging.PaginationCondition;
 import com.bbsuper.nev.beans.po.FollowRecordsEntity;
 import com.bbsuper.nev.beans.po.FollowRecordsEntity.Status;
 import com.bbsuper.nev.beans.vo.customer.FollowRecordsInfo;
+
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:42:48
+ *
+ */
 @Mapper
 public interface FollowRecordsEntityMapper {
 

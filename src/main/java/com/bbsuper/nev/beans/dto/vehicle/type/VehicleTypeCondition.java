@@ -1,4 +1,4 @@
-package com.bbsuper.nev.beans.dto.vehicle_type;
+package com.bbsuper.nev.beans.dto.vehicle.type;
 
 import com.alibaba.fastjson.JSON;
 import com.bbsuper.nev.beans.po.VehicleTypeEntity;

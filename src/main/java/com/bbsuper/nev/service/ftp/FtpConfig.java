@@ -92,9 +92,9 @@ public class FtpConfig {
 		//最大数量
 		config.setMaxTotal(maxTotal);
 		//最大空闲数
-		config.setMaxIdle(5);
+		config.setMaxIdle(3);
 		//最少空闲数
-		config.setMaxIdle(5);
+		config.setMaxIdle(3);
 		//池无空闲资源时，最大等待时间
 		config.setMaxWaitMillis(30*1000);
 		//池无空闲资源时，是否阻塞等待

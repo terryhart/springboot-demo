@@ -20,7 +20,12 @@ import com.bbsuper.nev.beans.vo.customer.FollowRecordsInfo;
 import com.bbsuper.nev.dao.mapping.FollowRecordsEntityMapper;
 import com.bbsuper.nev.service.FollowRecordsService;
 import com.bbsuper.nev.utils.ControllerUtil;
-
+/**
+ * 
+ * @author liwei
+ * @date: 2018年11月7日 上午10:43:54
+ *
+ */
 @Service
 public class FollowRecordsServiceImpl implements FollowRecordsService{
 	
