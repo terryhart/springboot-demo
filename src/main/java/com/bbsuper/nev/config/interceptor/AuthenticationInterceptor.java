@@ -1,4 +1,4 @@
-package com.bbsuper.nev.config;
+package com.bbsuper.nev.config.interceptor;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
@@ -85,6 +85,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
 			throws Exception {
 		//清理资源
 		ControllerUtil.removeUser();
+		MDC.clear();
 	}
 
 

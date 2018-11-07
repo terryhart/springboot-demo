@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
 
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bbsuper.nev.beans.vo.common.ResultData;
+import com.bbsuper.nev.config.thread.AsyncThreadPool;
 import com.bbsuper.nev.service.FileService;
 import com.bbsuper.nev.service.ftp.FtpConfig;
 import com.bbsuper.nev.service.ftp.FtpPool;
@@ -43,7 +43,7 @@ public class FileServiceImpl implements FileService{
 	private FtpConfig ftpConfig;
 	
 	@Resource
-	private Executor asyncThreadPool;
+	private AsyncThreadPool asyncThreadPool;
 
 	@Override
 	public ResultData<List<String>> upload(MultipartFile[] files) throws Exception {
