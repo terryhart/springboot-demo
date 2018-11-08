@@ -1,5 +1,6 @@
 package com.bbsuper.nev.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.bbsuper.nev.beans.dto.paging.PaginationCondition;
@@ -10,10 +11,6 @@ import com.bbsuper.nev.beans.dto.vehicle.type.VehicleTypeDto;
 import com.bbsuper.nev.beans.po.VehicleTypeEntity;
 import com.bbsuper.nev.beans.po.VehicleTypeEntity.Status;
 import com.bbsuper.nev.beans.vo.common.ResultData;
-import com.bbsuper.nev.beans.vo.customer.CustomerInfo;
-import com.bbsuper.nev.beans.vo.finance.ReceiptInfo;
-import com.bbsuper.nev.beans.vo.finance.RefundInfo;
-import com.bbsuper.nev.beans.vo.vehicle.VehicleInfo;
 import com.bbsuper.nev.beans.vo.vehicle.type.VehicleTypeInfo;
 
 /**
@@ -63,19 +60,7 @@ public interface VehicleTypeService {
 	
 	VehicleTypeEntity selectById(Long id);
 	
-	void addType(List<VehicleInfo> list);
-	
-	
-	void addType(CustomerInfo customerInfo);
-	
-	
-	void addTType(List<CustomerInfo> list);
-	
-	
-	void addTTType(List<ReceiptInfo> list);
-	
-	
-	void addTTTType(List<RefundInfo> list);
+	<T> void addType(Collection<T> list);
 	
 	
 

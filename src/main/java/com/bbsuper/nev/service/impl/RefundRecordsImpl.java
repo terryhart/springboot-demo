@@ -55,7 +55,7 @@ public class RefundRecordsImpl implements RefundRecordsService{
 	@Override
 	public ResultData<PaginationResult<RefundInfo>> queryList(PaginationCondition<RecordsCondition> condition) {
 		List<RefundInfo> list = refundRecordsEntityMapper.queryListByCondition(condition);
-		vehicleTypeService.addTTTType(list);
+		vehicleTypeService.addType(list);
 		int count = refundRecordsEntityMapper.queryCountByCondition(condition);
 		PaginationResult<RefundInfo> instance = PaginationResult.getInstance(list, condition.getPageInfo(), count);
 		return ResultData.getInstance(instance);

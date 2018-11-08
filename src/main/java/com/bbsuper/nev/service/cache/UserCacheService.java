@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.bbsuper.nev.beans.vo.user.UserInfo;
 import com.bbsuper.nev.dao.mapping.AccountEntityMapper;
 import com.bbsuper.nev.service.CityService;
+import com.google.common.collect.Lists;
 
 /**
  * 用户缓存服务
@@ -34,13 +35,13 @@ public class UserCacheService {
 	@Cacheable(key = "#id",value = "userInfo")
 	public UserInfo queryUserInfoById(Long id) {
 		UserInfo entity = accountEntityMapper.queryUserInfoById(id);
-		cityService.addCity(entity);
+		cityService.addCity(Lists.newArrayList(entity));
 		return entity;
 	}
 	
 	public UserInfo queryUserInfoByAccount(String account) {
 		UserInfo entity = accountEntityMapper.queryUserInfoByAccount(account);
-		cityService.addCity(entity);
+		cityService.addCity(Lists.newArrayList(entity));
 		return entity;
 	}
 	

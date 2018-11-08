@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.alibaba.fastjson.JSON;
 import com.bbsuper.nev.beans.po.CustomerEntity.Status;
 import com.bbsuper.nev.beans.po.ReceiptEntity.Type;
+import com.bbsuper.nev.beans.vo.vehicle.type.BaseVehicleType;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @ApiModel(description = "收款记录")
-public class ReceiptInfo {
+public class ReceiptInfo extends BaseVehicleType{
 	
 	@ApiModelProperty("id")
 	private Long id;
@@ -29,18 +30,6 @@ public class ReceiptInfo {
     
     @ApiModelProperty("客户状态")
     private Status status;
-    
-	@ApiModelProperty("意向车型id")
-	private Long intentionVehicleTypeId;
-	
-	@ApiModelProperty("意向车型")
-	private String intentionVehicleType;
-	
-	@ApiModelProperty("购买车型id")
-	private Long vehicleTypeId;
-	
-	@ApiModelProperty("购买车型")
-	private String vehicleType;
     
 	@ApiModelProperty("车牌号")
     private String plateNumbers;
@@ -86,13 +75,6 @@ public class ReceiptInfo {
 		this.status = status;
 	}
 
-	public String getIntentionVehicleType() {
-		return intentionVehicleType;
-	}
-
-	public void setIntentionVehicleType(String intentionVehicleType) {
-		this.intentionVehicleType = intentionVehicleType;
-	}
 
 	public String getPlateNumbers() {
 		return plateNumbers;
@@ -131,29 +113,6 @@ public class ReceiptInfo {
 		return JSON.toJSONString(this);
 	}
 
-	public Long getIntentionVehicleTypeId() {
-		return intentionVehicleTypeId;
-	}
-
-	public void setIntentionVehicleTypeId(Long intentionVehicleTypeId) {
-		this.intentionVehicleTypeId = intentionVehicleTypeId;
-	}
-
-	public Long getVehicleTypeId() {
-		return vehicleTypeId;
-	}
-
-	public void setVehicleTypeId(Long vehicleTypeId) {
-		this.vehicleTypeId = vehicleTypeId;
-	}
-
-	public String getVehicleType() {
-		return vehicleType;
-	}
-
-	public void setVehicleType(String vehicleType) {
-		this.vehicleType = vehicleType;
-	}
     
     
 

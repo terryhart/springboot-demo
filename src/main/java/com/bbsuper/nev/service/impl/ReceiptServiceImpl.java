@@ -51,7 +51,7 @@ public class ReceiptServiceImpl implements ReceiptService{
 	@Override
 	public ResultData<PaginationResult<ReceiptInfo>> queryList(PaginationCondition<RecordsCondition> condition) {
 		List<ReceiptInfo> list = receiptEntityMapper.queryListByCondition(condition);
-		vehicleTypeService.addTTType(list);
+		vehicleTypeService.addType(list);
 		int count = receiptEntityMapper.queryCountByCondition(condition);
 		PaginationResult<ReceiptInfo> instance = PaginationResult.getInstance(list, condition.getPageInfo(), count);
 		return ResultData.getInstance(instance);

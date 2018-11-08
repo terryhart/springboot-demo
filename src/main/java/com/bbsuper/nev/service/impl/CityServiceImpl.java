@@ -1,5 +1,6 @@
 package com.bbsuper.nev.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -76,40 +77,29 @@ public class CityServiceImpl implements CityService{
 	}
 
 	@Override
-	public void addCity(UserInfo userInfo) {
-		Map<Long, CityEntity> city = cityCacheService.queryAll();
-		if(userInfo!=null&&userInfo.getCityId().longValue()!=0){
-			userInfo.setCityName(city.get(userInfo.getCityId()).getCity());
-		}
-	}
-
-	@Override
-	public void addCity(List<UserInfo> userInfos) {
-		Map<Long, CityEntity> city = cityCacheService.queryAll();
-		userInfos.forEach(u->{
-			if(u.getCityId().longValue()!=0){
-				u.setCityName(city.get(u.getCityId()).getCity());
+	public <T> void addCity(Collection<T> list) {
+		Map<Long, CityEntity> map = cityCacheService.queryAll();
+		list.forEach(bean->{
+			if(bean instanceof CustomerInfo){
+				addCity((CustomerInfo)bean,map);
+			}
+			if(bean	instanceof UserInfo){
+				addCity((UserInfo)bean,map);
 			}
 		});
-	}
-
-	@Override
-	public void addCCity(List<CustomerInfo> list) {
-		Map<Long, CityEntity> map = cityCacheService.queryAll();
-		list.forEach(c->{
-			if(c.getCityId()!=null&&c.getCityId().longValue()!=0){
-				c.setCityName(map.get(c.getCityId()).getCity());
-			}
-		});
-	}
-
-	@Override
-	public void addCity(CustomerInfo customerInfo) {
-		Map<Long, CityEntity> map = cityCacheService.queryAll();
-		if(customerInfo!=null&&customerInfo.getCityId()!=null&&customerInfo.getCityId().longValue()!=0){
-			customerInfo.setCityName(map.get(customerInfo.getCityId()).getCity());
-		}
 		
+	}
+
+	private void addCity(UserInfo u, Map<Long, CityEntity> map) {
+		if(u.getCityId()!=null&&u.getCityId().longValue()!=0){
+			u.setCityName(map.get(u.getCityId()).getCity());
+		}
+	}
+
+	private void addCity(CustomerInfo c, Map<Long, CityEntity> map) {
+		if(c.getCityId()!=null&&c.getCityId().longValue()!=0){
+			c.setCityName(map.get(c.getCityId()).getCity());
+		}
 	}
 	
 

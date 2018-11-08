@@ -203,8 +203,8 @@ public class CustomerServiceImpl implements CustomerService{
 	public ResultData<Void> changeVehicle(ChangeVehicleDto changeVehicleDto) {
 		//1.原有车辆退回
 		CustomerInfo customerInfo = customerEntityMapper.queryCustomerInfoById(changeVehicleDto.getId());
-		cityService.addCity(customerInfo);
-		vehicleTypeService.addType(customerInfo);
+		cityService.addCity(Lists.newArrayList(customerInfo));
+		vehicleTypeService.addType(Lists.newArrayList(customerInfo));
 		
 		vehicleInfoService.back(customerInfo.getVehicleId(),"更换车辆");
 		//2.锁定车辆
@@ -220,8 +220,8 @@ public class CustomerServiceImpl implements CustomerService{
 	public ResultData<Void> refund(RefundDto refundDto) {
 		//1.原有车辆退回
 		CustomerInfo customerInfo = customerEntityMapper.queryCustomerInfoById(refundDto.getId());
-		cityService.addCity(customerInfo);
-		vehicleTypeService.addType(customerInfo);
+		cityService.addCity(Lists.newArrayList(customerInfo));
+		vehicleTypeService.addType(Lists.newArrayList(customerInfo));
 		
 		vehicleInfoService.back(customerInfo.getVehicleId(),"收车退款");
 		//2.放弃客户
@@ -271,8 +271,8 @@ public class CustomerServiceImpl implements CustomerService{
 		setCommonCondition(condition.getCondition());
 		List<CustomerInfo> list = customerEntityMapper.queryListByInteresting(condition);
 		//缓存查询城市信息
-		cityService.addCCity(list);
-		vehicleTypeService.addTType(list);
+		cityService.addCity(list);
+		vehicleTypeService.addType(list);
 		
 		int count = customerEntityMapper.queryCountByInteresting(condition);
 		PaginationResult<CustomerInfo> instance = PaginationResult.getInstance(list,condition.getPageInfo(),count);
@@ -299,8 +299,8 @@ public class CustomerServiceImpl implements CustomerService{
 		setCommonCondition(condition.getCondition());
 		List<CustomerInfo> list = customerEntityMapper.queryListByFollow(condition);
 		//缓存查询城市信息
-		cityService.addCCity(list);
-		vehicleTypeService.addTType(list);
+		cityService.addCity(list);
+		vehicleTypeService.addType(list);
 		
 		int count = customerEntityMapper.queryCountByFollow(condition);
 		PaginationResult<CustomerInfo> instance = PaginationResult.getInstance(list,condition.getPageInfo(),count);
@@ -317,8 +317,8 @@ public class CustomerServiceImpl implements CustomerService{
 		setCommonCondition(condition.getCondition());
 		List<CustomerInfo> list = customerEntityMapper.queryListBySold(condition);
 		//缓存查询城市信息
-		cityService.addCCity(list);
-		vehicleTypeService.addTType(list);
+		cityService.addCity(list);
+		vehicleTypeService.addType(list);
 		
 		int count = customerEntityMapper.queryCountBySold(condition);
 		PaginationResult<CustomerInfo> instance = PaginationResult.getInstance(list,condition.getPageInfo(),count);
@@ -335,8 +335,8 @@ public class CustomerServiceImpl implements CustomerService{
 		setCommonCondition(condition.getCondition());
 		List<CustomerInfo> list = customerEntityMapper.queryListByDiscard(condition);
 		//缓存查询城市信息
-		cityService.addCCity(list);
-		vehicleTypeService.addTType(list);
+		cityService.addCity(list);
+		vehicleTypeService.addType(list);
 		
 		int count = customerEntityMapper.queryCountByDiscard(condition);
 		PaginationResult<CustomerInfo> instance = PaginationResult.getInstance(list,condition.getPageInfo(),count);

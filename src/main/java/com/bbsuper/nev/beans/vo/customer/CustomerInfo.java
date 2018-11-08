@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.bbsuper.nev.beans.po.CustomerEntity.BuyWay;
 import com.bbsuper.nev.beans.po.CustomerEntity.Source;
 import com.bbsuper.nev.beans.po.CustomerEntity.Status;
+import com.bbsuper.nev.beans.vo.vehicle.type.BaseVehicleType;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @ApiModel("客户信息")
-public class CustomerInfo {
+public class CustomerInfo extends BaseVehicleType{
 	
 	@ApiModelProperty("id")
 	private Long id;
@@ -50,12 +51,6 @@ public class CustomerInfo {
     @ApiModelProperty("微信号")
     private String wechat;
     
-    @ApiModelProperty("意向车型id")
-    private Long intentionVehicleTypeId;
-    
-    @ApiModelProperty("意向车型")
-    private String intentionVehicleType;
-    
     @ApiModelProperty("关键词")
     private String keyword;
 
@@ -73,12 +68,6 @@ public class CustomerInfo {
 	
     @ApiModelProperty("车辆id")
     private Long vehicleId;
-    
-    @ApiModelProperty("购买车型id")
-    private Long vehicleTypeId;
-    
-    @ApiModelProperty("购买车型")
-    private String vehicleType;
 	
 	@ApiModelProperty("车牌号")
 	private String plateNumbers;
@@ -100,24 +89,6 @@ public class CustomerInfo {
 
     @ApiModelProperty("合同链接，多个用逗号隔开")
     private String contractLink;
-    
-    
-
-	public Long getVehicleTypeId() {
-		return vehicleTypeId;
-	}
-
-	public void setVehicleTypeId(Long vehicleTypeId) {
-		this.vehicleTypeId = vehicleTypeId;
-	}
-
-	public String getIntentionVehicleType() {
-		return intentionVehicleType;
-	}
-
-	public void setIntentionVehicleType(String intentionVehicleType) {
-		this.intentionVehicleType = intentionVehicleType;
-	}
 
 	public Long getId() {
 		return id;
@@ -207,14 +178,6 @@ public class CustomerInfo {
 		this.wechat = wechat;
 	}
 
-	public Long getIntentionVehicleTypeId() {
-		return intentionVehicleTypeId;
-	}
-
-	public void setIntentionVehicleTypeId(Long intentionVehicleTypeId) {
-		this.intentionVehicleTypeId = intentionVehicleTypeId;
-	}
-
 	public String getKeyword() {
 		return keyword;
 	}
@@ -261,14 +224,6 @@ public class CustomerInfo {
 
 	public void setVehicleId(Long vehicleId) {
 		this.vehicleId = vehicleId;
-	}
-
-	public String getVehicleType() {
-		return vehicleType;
-	}
-
-	public void setVehicleType(String vehicleType) {
-		this.vehicleType = vehicleType;
 	}
 
 	public String getPlateNumbers() {

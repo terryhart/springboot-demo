@@ -1,5 +1,6 @@
 package com.bbsuper.nev.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,10 +18,8 @@ import com.bbsuper.nev.beans.enums.result.BaseRetCode;
 import com.bbsuper.nev.beans.po.VehicleTypeEntity;
 import com.bbsuper.nev.beans.po.VehicleTypeEntity.Status;
 import com.bbsuper.nev.beans.vo.common.ResultData;
-import com.bbsuper.nev.beans.vo.customer.CustomerInfo;
-import com.bbsuper.nev.beans.vo.finance.ReceiptInfo;
-import com.bbsuper.nev.beans.vo.finance.RefundInfo;
 import com.bbsuper.nev.beans.vo.vehicle.VehicleInfo;
+import com.bbsuper.nev.beans.vo.vehicle.type.BaseVehicleType;
 import com.bbsuper.nev.beans.vo.vehicle.type.VehicleTypeInfo;
 import com.bbsuper.nev.dao.mapping.VehicleTypeEntityMapper;
 import com.bbsuper.nev.service.VehicleTypeService;
@@ -105,74 +104,35 @@ public class VehicleTypeServiceImpl implements VehicleTypeService{
 	}
 
 	@Override
-	public void addType(List<VehicleInfo> list) {
-		Map<Long, VehicleTypeEntity> queryAll = vehicleTypeCacheService.queryAll();
-		list.forEach(v->{
-			VehicleTypeEntity entity = queryAll.get(v.getVehicleTypeId());
-			v.setDistributor(entity.getDistributor());
-			v.setTrademark(entity.getTrademark());
+	public <T> void addType(Collection<T> list) {
+		Map<Long, VehicleTypeEntity> map = vehicleTypeCacheService.queryAll();
+		list.forEach(bean->{
+			if(bean instanceof BaseVehicleType){
+				addType((BaseVehicleType)bean,map);
+			}
+			if(bean instanceof VehicleInfo){
+				addType((VehicleInfo)bean,map);
+			}
 		});
 		
 	}
 
-	@Override
-	public void addType(CustomerInfo customerInfo) {
-		Map<Long, VehicleTypeEntity> map = vehicleTypeCacheService.queryAll();
-		if(customerInfo.getIntentionVehicleTypeId()!=null){
-			VehicleTypeEntity entity = map.get(customerInfo.getIntentionVehicleTypeId());
-			customerInfo.setIntentionVehicleType(entity.getTrademark());
+	private void addType(BaseVehicleType c, Map<Long, VehicleTypeEntity> map) {
+		if(c.getIntentionVehicleTypeId()!=null){
+			VehicleTypeEntity entity = map.get(c.getIntentionVehicleTypeId());
+			c.setIntentionVehicleType(entity.getTrademark());
 		}
-		if(customerInfo.getVehicleTypeId()!=null){
-			VehicleTypeEntity entity = map.get(customerInfo.getVehicleTypeId());
-			customerInfo.setVehicleType(entity.getTrademark());
+		if(c.getVehicleTypeId()!=null){
+			VehicleTypeEntity entity = map.get(c.getVehicleTypeId());
+			c.setVehicleType(entity.getTrademark());
 		}
-	}
-
-	@Override
-	public void addTType(List<CustomerInfo> list) {
-		Map<Long, VehicleTypeEntity> map = vehicleTypeCacheService.queryAll();
-		list.forEach(c->{
-			if(c.getIntentionVehicleTypeId()!=null){
-				VehicleTypeEntity entity = map.get(c.getIntentionVehicleTypeId());
-				c.setIntentionVehicleType(entity.getTrademark());
-			}
-			if(c.getVehicleTypeId()!=null){
-				VehicleTypeEntity entity = map.get(c.getVehicleTypeId());
-				c.setVehicleType(entity.getTrademark());
-			}
-		});
 		
 	}
 
-	@Override
-	public void addTTType(List<ReceiptInfo> list) {
-		Map<Long, VehicleTypeEntity> map = vehicleTypeCacheService.queryAll();
-		list.forEach(c->{
-			if(c.getIntentionVehicleTypeId()!=null){
-				VehicleTypeEntity entity = map.get(c.getIntentionVehicleTypeId());
-				c.setIntentionVehicleType(entity.getTrademark());
-			}
-			if(c.getVehicleTypeId()!=null){
-				VehicleTypeEntity entity = map.get(c.getVehicleTypeId());
-				c.setVehicleType(entity.getTrademark());
-			}
-		});
-		
-	}
-
-	@Override
-	public void addTTTType(List<RefundInfo> list) {
-		Map<Long, VehicleTypeEntity> map = vehicleTypeCacheService.queryAll();
-		list.forEach(c->{
-			if(c.getIntentionVehicleTypeId()!=null){
-				VehicleTypeEntity entity = map.get(c.getIntentionVehicleTypeId());
-				c.setIntentionVehicleType(entity.getTrademark());
-			}
-			if(c.getVehicleTypeId()!=null){
-				VehicleTypeEntity entity = map.get(c.getVehicleTypeId());
-				c.setVehicleType(entity.getTrademark());
-			}
-		});
+	private void addType(VehicleInfo bean, Map<Long, VehicleTypeEntity> map) {
+		VehicleTypeEntity entity = map.get(bean.getVehicleTypeId());
+		bean.setDistributor(entity.getDistributor());
+		bean.setTrademark(entity.getTrademark());
 	}
 
 
