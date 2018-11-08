@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService{
 		token.setAccount(user.getAccount());
 		token.setPassword(user.getPassword());
 		token.setId(user.getId());
-		redisDao.set(tokens, JSON.toJSONString(token));
+		redisDao.set(tokens, JSON.toJSONString(token),7, TimeUnit.DAYS);
 		return tokens;
 	}
 

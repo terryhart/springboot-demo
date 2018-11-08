@@ -47,7 +47,9 @@ public class AsyncThreadPool extends ThreadPoolTaskExecutor{
 	public void execute(Runnable task) {
 		super.execute(proxyRunnable(task));
 	}
-	
+		
+
+
 	@Override
 	public Future<?> submit(Runnable task) {
 		return super.submit(proxyRunnable(task));
@@ -61,6 +63,7 @@ public class AsyncThreadPool extends ThreadPoolTaskExecutor{
 	public <T> Future<T> submit(Callable<T> task) {
 		return super.submit(proxyCallable(task));
 	}
+	
 	
 	
 	

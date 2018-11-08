@@ -3,6 +3,7 @@ package com.bbsuper.nev.config.interceptor;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -91,6 +92,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
 
 
 	private void beforeUserInfo(String token, Token data) {
+		redisDao.expire(token, 7, TimeUnit.DAYS);
     	//放入ThreadLocal，当前线程可获取
     	UserInfo userInfo = userCacheService.queryUserInfoById(data.getId());
     	if(userInfo!=null){

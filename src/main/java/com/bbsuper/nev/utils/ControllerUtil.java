@@ -19,7 +19,7 @@ public class ControllerUtil {
 	/**
 	 * 当前登录用户
 	 */
-	private static final ThreadLocal<UserInfo> USERS = new ThreadLocal<>();
+	private static final ThreadLocal<UserInfo> USERS = new InheritableThreadLocal<>();
 	
 	public static HttpServletRequest getRequest() {
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
