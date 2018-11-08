@@ -110,12 +110,16 @@ public class UserServiceImpl implements UserService{
 
 
 	private String generateAndSaveToken(UserInfo user) {
-		String tokens = LoginConstant.TOKEN + EncryptionUtils.random(20);
 		Token token = new Token();
 		token.setAccount(user.getAccount());
 		token.setPassword(user.getPassword());
 		token.setId(user.getId());
-		redisDao.set(tokens, JSON.toJSONString(token),7, TimeUnit.DAYS);
+		
+		String tokens = "";
+		do{
+			tokens = LoginConstant.TOKEN + EncryptionUtils.random(20);
+		}while(!redisDao.setIfAbsent(tokens, JSON.toJSONString(token),7, TimeUnit.DAYS));
+		
 		return tokens;
 	}
 
