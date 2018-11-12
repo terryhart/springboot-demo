@@ -1,22 +1,16 @@
 package com.bbsuper.nev.config.thread;
-
-import java.util.Map;
+import java.lang.reflect.Field;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
-import com.bbsuper.nev.beans.vo.user.UserInfo;
-import com.bbsuper.nev.utils.ControllerUtil;
-
 /**
  * 异步线程池
  * 可配合注解使用@Async("asyncThreadPool")
- * 可继承调用线程的MDC信息，以及User信息
+ * 可继承调用线程ThreadLocal,并支持动态变化
  * @author liwei
  * @date: 2018年11月7日 下午1:42:53
  *
@@ -45,14 +39,22 @@ public class AsyncThreadPool extends ThreadPoolTaskExecutor{
 
 	@Override
 	public void execute(Runnable task) {
-		super.execute(proxyRunnable(task));
+		Thread originalThread = Thread.currentThread();
+		super.execute(()->{
+			copyThreadLocals(originalThread);
+			task.run();
+		});
 	}
 		
 
 
 	@Override
 	public Future<?> submit(Runnable task) {
-		return super.submit(proxyRunnable(task));
+		Thread originalThread = Thread.currentThread();
+		return super.submit(()->{
+			copyThreadLocals(originalThread);
+			task.run();
+		});
 		
 	}
 	
@@ -61,44 +63,30 @@ public class AsyncThreadPool extends ThreadPoolTaskExecutor{
 	 */
 	@Override
 	public <T> Future<T> submit(Callable<T> task) {
-		return super.submit(proxyCallable(task));
+		Thread originalThread = Thread.currentThread();
+		return super.submit(()->{
+			copyThreadLocals(originalThread);
+			return task.call();
+		});
 	}
 	
 	
-	
-	
-	private Runnable proxyRunnable(Runnable task){
-		Map<String, String> contextMap = MDC.getCopyOfContextMap();
-		UserInfo currentUser = ControllerUtil.getCurrentUser();
-		return ()->{
-			try{
-				ControllerUtil.putUser(currentUser);
-				if(contextMap!=null){
-					MDC.setContextMap(contextMap);
-				}
-				task.run();
-			}finally{
-				MDC.clear();
-				ControllerUtil.removeUser();
-			}
-		};
-	}
-	
-	private <T> Callable<T> proxyCallable(Callable<T> task){
-		Map<String, String> contextMap = MDC.getCopyOfContextMap();
-		UserInfo currentUser = ControllerUtil.getCurrentUser();
-		return ()->{
-			try{
-				ControllerUtil.putUser(currentUser);
-				if(contextMap!=null){
-					MDC.setContextMap(contextMap);
-				}
-				return task.call();
-			}finally{
-				MDC.clear();
-				ControllerUtil.removeUser();
-			}
-		};
+	/**
+	 * 复制原始线程的ThreadLocal内容到当前线程
+	 * @param originalThread
+	 */
+	private void copyThreadLocals(Thread originalThread) {
+		try{
+			Field threadLocals = Thread.class.getDeclaredField("threadLocals");
+			threadLocals.setAccessible(true);
+			threadLocals.set(Thread.currentThread(), threadLocals.get(originalThread));
+			
+			Field inheritableThreadLocals = Thread.class.getDeclaredField("inheritableThreadLocals");
+			inheritableThreadLocals.setAccessible(true);
+			inheritableThreadLocals.set(Thread.currentThread(), inheritableThreadLocals.get(originalThread));
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 

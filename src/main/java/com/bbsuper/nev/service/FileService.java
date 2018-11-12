@@ -21,4 +21,5 @@ public interface FileService {
 	 */
 	ResultData<List<String>> upload(MultipartFile[] files) throws Exception;
 
+
 }

@@ -81,15 +81,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
 	}
 
 
-	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
-		//清理资源
-		ControllerUtil.removeUser();
-		MDC.clear();
-	}
-
-
 
 	private void beforeUserInfo(String token, Token data) {
 		redisDao.expire(token, 7, TimeUnit.DAYS);
