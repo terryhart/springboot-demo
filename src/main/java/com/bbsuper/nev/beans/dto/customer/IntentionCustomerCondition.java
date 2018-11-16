@@ -44,7 +44,7 @@ public class IntentionCustomerCondition extends CustomerCondition{
 	}
 
 	public void setApplyEndDate(String applyEndDate) {
-		this.applyEndDate = applyEndDate;
+		this.applyEndDate = applyEndDate+" 24:00:00";
 	}
 	
 	

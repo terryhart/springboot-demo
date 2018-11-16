@@ -58,10 +58,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
         //1.获取当前用户信息
         String token = request.getHeader(LoginConstant.TOKEN);
         ResultData<Token> tokenRet = queryToken(token);
-        if(tokenRet.success()){
-        	//用户信息预处理
-        	beforeUserInfo(token,tokenRet.getData());
-        }
+        //用户信息预处理
+        beforeUserInfo(token,tokenRet);
+        
         Method method = ((HandlerMethod) handler).getMethod();
         //2.判断接口是否需要登录
         if (request.getRequestURI().startsWith(API_DOC_URI)) {
@@ -82,13 +81,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
 
 
 
-	private void beforeUserInfo(String token, Token data) {
+	private void beforeUserInfo(String token, ResultData<Token> tokenRet) {
+		MDC.put("user", "未登录用户");
+		ControllerUtil.removeUser();
+		if(!tokenRet.success()){
+			return;
+		}
 		redisDao.expire(token, 7, TimeUnit.DAYS);
     	//放入ThreadLocal，当前线程可获取
-    	UserInfo userInfo = userCacheService.queryUserInfoById(data.getId());
+    	UserInfo userInfo = userCacheService.queryUserInfoById(tokenRet.getData().getId());
     	if(userInfo!=null){
     		ControllerUtil.putUser(userInfo);
-        	//添加MDC信息，可全局记录用户日志
         	MDC.put("user", builderUserStr(userInfo));
     	}
 	}

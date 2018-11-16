@@ -44,7 +44,7 @@ public class FollowCustomerCondition extends CustomerCondition{
 	}
 
 	public void setFollowEndDate(String followEndDate) {
-		this.followEndDate = followEndDate;
+		this.followEndDate = followEndDate+" 24:00:00";
 	}
 	
 	
